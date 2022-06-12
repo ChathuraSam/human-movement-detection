@@ -17,6 +17,8 @@ BODY_PARTS = { "Neck": 1, "RShoulder": 2, "RElbow": 3, "RWrist": 4,
 POSE_PAIRS = [ 
   ["RShoulder", "RElbow"],
   ["RElbow", "RWrist"], 
+  ["LShoulder", "LElbow"],
+  ["LElbow", "LWrist"]
 ]
 
 width = 368
