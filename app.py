@@ -17,6 +17,8 @@ BODY_PARTS = { "Neck": 1, "RShoulder": 2, "RElbow": 3, "RWrist": 4,
 POSE_PAIRS = [ 
   ["RShoulder", "RElbow"],
   ["RElbow", "RWrist"], 
+  ["LShoulder", "LElbow"],
+  ["LElbow", "LWrist"]
 ]
 
 width = 368
@@ -139,22 +141,37 @@ def calculateAngle(A, B, C):
 
     return beta
 
+def armTest(input):
+  output, pointsForCalc = poseDetector(input)
+  drawCoordinatesOnImage(imgName, input, output, pointsForCalc);
+
+  A, B, C = pointsForCalc[0], pointsForCalc[2], pointsForCalc[3]
+  D, E, F = pointsForCalc[4], pointsForCalc[6], pointsForCalc[7]
+  rAngle = calculateAngle(A, B, C);
+  lAngle = calculateAngle(D, E, F);
+
+  if(rAngle<180 and rAngle+5>=180):
+    print("Passed the Right arm test! ARM angle: %f" %rAngle)
+  if(rAngle>180 and rAngle-5<=180):
+    print("Passed the Right arm test! ARM angle: %f" %rAngle)
+  if(rAngle==180):
+    print("Right ARM Perfectly Passed")
+  else:
+    print("Right Arm test failed. Arms are too much angled %f" %rAngle)
+
+
+  if(lAngle<180 and lAngle+5>=180):
+    print("Passed the Left arm test! ARM angle: %f" %lAngle)
+  if(lAngle>180 and lAngle-5<=180):
+    print("Passed the Left arm test! ARM angle: %f" %lAngle)
+  if(lAngle==180):
+    print("Left Arm Perfectly Passed")
+  else:
+    print("Left Arm test failed. Arms are too much angled %f" %lAngle)
+
 #Main Method
 imgName = 'body1.jpg'
 imgPath = "media/images/"+imgName # body1.jpg body2.jpg body3.pn body4.jpg body5.jpg
 
 input = cv.imread(imgPath)
-output, pointsForCalc = poseDetector(input)
-drawCoordinatesOnImage(imgName, input, output, pointsForCalc);
-
-A, B, C = pointsForCalc[0], pointsForCalc[2], pointsForCalc[3]
-angle = calculateAngle(A, B, C);
-
-if(angle<180 and angle+5>=180):
-  print("Passed the arm test! ARM angle: %f" %angle)
-if(angle>180 and angle-5<=180):
-  print("Passed the arm test! ARM angle: %f" %angle)
-if(angle==180):
-  print("Perfectly Passed")
-else:
-  print("Arm test failed. Arms are too much angled %f" %angle)
+armTest(input)
