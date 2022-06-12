@@ -84,18 +84,14 @@ def solve(self, coordinates):
       return False
     return True 
 
-
 font = cv.FONT_HERSHEY_SIMPLEX
 
-img1 = "image.jpg"
-img2 = "image1.jpg"
-img3 = "image2.jpg"
+bodyImg = "image.jpg" # body1.jpg body2.jpg body3.pn body4.jpg body5.jpg
+handImg = "hand1.png" # hand1.png
 
-input = cv.imread(img1)
+input = cv.imread(bodyImg)
 
-
-output, pointsForCalc = poseDetector(input)
-# print(pointsForCalc)
+output, pointsForCalc = poseDetector(bodyImg)
 
 for pointValue in pointsForCalc:
   x = pointValue[0]
