@@ -29,6 +29,7 @@ thr = 0.2
 
 points = []
 pointsForCalc = []
+
 def poseDetector(frame):
     frameWidth = frame.shape[1]
     frameHeight = frame.shape[0]
@@ -71,9 +72,10 @@ def poseDetector(frame):
     
     return frame, pointsForCalc
 
-# Implementing the Straight Line Function
-"""
+    """
+Straight Line Function
 Returns true if three points in a straight line or not
+We can use this or either wen can use the angle calculation method to detect a straignt line
 """
 print("Solve function is Running...!")
 def solve(self, coordinates):
@@ -84,36 +86,28 @@ def solve(self, coordinates):
       return False
     return True 
 
-font = cv.FONT_HERSHEY_SIMPLEX
+def drawCoordinatesOnImage(imgName, input, output, pointsForCalc):
+  font = cv.FONT_HERSHEY_SIMPLEX
+  for pointValue in pointsForCalc:
+    x = pointValue[0]
+    y = pointValue[1]
+    cv.putText(input, str(x) + ',' +str(y), (x,y), font,0.5, (0, 255, 0), 2)
 
-bodyImg = "image.jpg" # body1.jpg body2.jpg body3.pn body4.jpg body5.jpg
-handImg = "hand1.png" # hand1.png
+  self = pointsForCalc[2]
+  coordinates = []
+  coordinates.append(pointsForCalc[0])
+  coordinates.append(pointsForCalc[1])
 
-input = cv.imread(bodyImg)
+  #print(solve(self,coordinates))
 
-output, pointsForCalc = poseDetector(bodyImg)
-
-for pointValue in pointsForCalc:
-  x = pointValue[0]
-  y = pointValue[1]
-  cv.putText(input, str(x) + ',' +str(y), (x,y), font,0.5, (0, 255, 0), 2)
-
-self = pointsForCalc[2]
-coordinates = []
-coordinates.append(pointsForCalc[0])
-coordinates.append(pointsForCalc[1])
-
-#print(solve(self,coordinates))
-
-cv2_imshow(output)
-
+  cv2_imshow(output)
 
 def lengthSquare(X, Y):
     xDiff = X[0] - Y[0]
     yDiff = X[1] - Y[1]
     return xDiff * xDiff + yDiff * yDiff
      
-def printAngle(A, B, C):
+def calculateAngle(A, B, C):
      
     # Square of lengths be a2, b2, c2
     a2 = lengthSquare(B, C)
@@ -143,37 +137,24 @@ def printAngle(A, B, C):
     #print("beta : %f" %(beta))
     #print("gamma : %f" %(gamma))
 
-    if(beta<180 and beta+5>=180):
-      print("Passed the arm test! ARM angle: %f" %beta)
-    if(beta>180 and beta-5<=180):
-      print("Passed the arm test! ARM angle: %f" %beta)
-    if(beta==180):
-      print("Perfectly Passed")
-    else:
-      print("Arm test failed. Arm are too much angled %f" %beta)
-    
-         
-# Driver code
-A = pointsForCalc[0]
-B = pointsForCalc[2]
-C = pointsForCalc[3]
- 
-printAngle(A, B, C);
+    return beta
 
+#Main Method
+imgName = 'body1.jpg'
+imgPath = "media/images/"+imgName # body1.jpg body2.jpg body3.pn body4.jpg body5.jpg
 
-import cv2
-cap = cv2.VideoCapture('dance.mp4')
-ret, frame = cap.read()
-frame_height, frame_width, _ = frame.shape
-out = cv2.VideoWriter('output.avi',cv2.VideoWriter_fourcc('M','J','P','G'), 10, (frame_width,frame_height))
-print("Processing Video...")
-while cap.isOpened():
-  ret, frame = cap.read()
-  if not ret:
-    out.release()
-    break
-  output = poseDetector(frame)
-  
-  out.write(output)
-out.release()
-print("Done processing video")
+input = cv.imread(imgPath)
+output, pointsForCalc = poseDetector(input)
+drawCoordinatesOnImage(imgName, input, output, pointsForCalc);
+
+A, B, C = pointsForCalc[0], pointsForCalc[2], pointsForCalc[3]
+angle = calculateAngle(A, B, C);
+
+if(angle<180 and angle+5>=180):
+  print("Passed the arm test! ARM angle: %f" %angle)
+if(angle>180 and angle-5<=180):
+  print("Passed the arm test! ARM angle: %f" %angle)
+if(angle==180):
+  print("Perfectly Passed")
+else:
+  print("Arm test failed. Arms are too much angled %f" %angle)
